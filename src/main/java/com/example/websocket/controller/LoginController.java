@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @Slf4j
@@ -20,9 +21,17 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String doLogin(@RequestParam Map<String, Object> map){
+    public String doLogin(@RequestParam Map<String, Object> map, HttpSession session){
 
-        log.info("登录用户: [{}]，登录密码: [{}]",map.get("username").toString(),map.get("password").toString());
+        try {
+            String username = map.get("username").toString();
+            String password = map.get("password").toString();
+
+            session.setAttribute("username",username);
+            log.info("登录用户: [{}]，登录密码: [{}]", username, password);
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
         return "index";
     }
 

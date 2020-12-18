@@ -1,10 +1,14 @@
 var websocket = null;
 
-//判断当前浏览器是否支持WebSocket, 主要此处要更换为自己的地址
-if ('WebSocket' in window) {
-    websocket = new WebSocket("ws://localhost:8080/test/broadcast");
-} else {
-    alert('Not support websocket')
+function linkWebSocket() {
+    //判断当前浏览器是否支持WebSocket, 主要此处要更换为自己的地址
+    if ('WebSocket' in window) {
+        //原本想在建立链接的时候将用户信息发送，但是失败了
+        var url = "ws://localhost:8080/test/broadcast"
+        websocket = new WebSocket(url);
+    } else {
+        alert('Not support websocket')
+    }
 }
 
 //连接发生错误的回调方法
@@ -44,7 +48,16 @@ function closeWebSocket() {
 
 //发送消息
 function send() {
+    var fromUser = document.getElementById('username').value;
+    var toUser = document.getElementById('sendto').value;
     var message = document.getElementById('text').value;
+
+    //定义JSON
+    var messageBody = {};
+    messageBody.fromUser = fromUser;
+    messageBody.toUser = toUser;
+    messageBody.content = message;
+
     document.getElementById('text').value = "";
-    websocket.send(message);
+    websocket.send(JSON.stringify(messageBody));
 }

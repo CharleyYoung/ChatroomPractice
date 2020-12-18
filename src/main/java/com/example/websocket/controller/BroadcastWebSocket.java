@@ -1,6 +1,8 @@
 package com.example.websocket.controller;
 
 
+import com.alibaba.fastjson.JSON;
+import com.example.websocket.model.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -64,14 +66,7 @@ public class BroadcastWebSocket {
     }
 
     private void SendMessage(String message,Session fromSession){
-
-        message = fromSession.getId() + ": " + message;
-        for(Map.Entry<String, Session> sessionEntry : client.entrySet()){
-            Session toSession = sessionEntry.getValue();
-            log.info("服务端给客户端[{}]发送消息{}", toSession.getId(), message);
-            //getAsyncRemote为异步推送,getBasicRemote为同步推送
-            //推荐使用异步推送
-            toSession.getAsyncRemote().sendText(message);
-        }
+        Message receive = JSON.parseObject(message,Message.class);
+        log.info(receive.toString());
     }
 }
